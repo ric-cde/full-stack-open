@@ -1,0 +1,13 @@
+note over browser:
+user submits, triggering form callback;
+entered text pushed to notes list;
+redraw notes on page
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+request triggers callback
+for route (/new_note);
+note written to notes array
+end note
