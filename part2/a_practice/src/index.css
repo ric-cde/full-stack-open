@@ -1,0 +1,43 @@
+h1 {
+    color: darkcyan;
+    font-weight: 900;
+    font-family: 'Montserrat';
+}
+
+.note {
+    color: rgb(41, 41, 41);
+    padding: 5px 8px;
+    margin: 5px 0px;
+    font-size: 18px;
+    background-color: rgba(173, 216, 230, 0.404);
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.priority-button, .show-priority-button {
+    background: rgb(117, 146, 163);
+    border: 0px;
+    font-size: 14px;
+    color: white;
+}
+
+.show-priority-button {
+    margin: 10px;
+    background: rgb(72, 72, 72);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+body {
+    background-color: rgba(128, 227, 240, 0.084);
+}
+
+.error {
+    color: firebrick;
+    background: whitesmoke;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
