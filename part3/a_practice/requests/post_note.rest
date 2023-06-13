@@ -1,4 +1,4 @@
-GET http://fso-practice22.eu-west-1.elasticbeanstalk.com:5000/api/notes
+GET http://apractice.eba-kph2xfd6.eu-west-1.elasticbeanstalk.com/api/notes
 
 ###
 POST http://localhost:3001/api/notes
