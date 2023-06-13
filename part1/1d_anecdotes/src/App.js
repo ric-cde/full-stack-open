@@ -36,7 +36,7 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   
   const randomSelect = () => {
-    const randomNumber = Math.round(Math.random()*(anecdotes.length - 1))
+    const randomNumber = Math.floor(Math.random()*(anecdotes.length))
     setSelected(randomNumber)
   }
 
@@ -46,11 +46,7 @@ const voteSelected = () => {
   setAnecdote(newAnecdotes)
 }
 
-const findMostVotes = () => {
-  const max = anecdotes.reduce((prev, curr) => (prev.votes > curr.votes ? prev : curr)
-  )
-  return max
-}
+const mostVotes = anecdotes.reduce((prev, curr) => (prev.votes > curr.votes ? prev : curr))
 
   useEffect(() => {
     randomSelect()
@@ -59,26 +55,28 @@ const findMostVotes = () => {
   return (
     <div>
       <h1>Anecdote of the day</h1>
-      <Anecdote anecdote={anecdotes[selected].quote} />
-      has {anecdotes[selected].votes} votes
+      <Anecdote quote={anecdotes[selected].quote} votes={anecdotes[selected].votes} />
       <Button handleClick={voteSelected} text="vote" />
       <Button handleClick={randomSelect} text="next anecdote" />
       <h1>Anecdote with most votes</h1>
-      <Anecdote anecdote={findMostVotes().quote} />
+      <Anecdote quote={mostVotes.quote} votes={mostVotes.votes} />
 
     </div>
   )
 }
 
-const Anecdote = ({ anecdote }) => {
+const Anecdote = ({ quote, votes }) => {
   return (
-    <p>{anecdote}</p>
+    <div>
+    {quote} <br />
+    has {votes} votes
+    </div>
   )
 }
 
 const Button = ({ handleClick, text }) => {
   return (
-    <button onClick={handleClick }>{text}</button>
+    <button onClick={handleClick}>{text}</button>
   )
 }
 

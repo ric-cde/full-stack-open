@@ -13,6 +13,7 @@ const App = () => {
   const [currentFilter, setCurrentFilter] = useState('')
   const [newMessage, setNewMessage] = useState(null)
   const [messageType, setMessageType] = useState(0)
+  const [personsToShow, setPersonsToShow] = useState([])
 
   useEffect(() => {
     personService
@@ -24,6 +25,14 @@ const App = () => {
         console.log(`Failed to retrieve notes: ${error}`)
       })
     }, [])
+
+  useEffect(() => {
+    setPersonsToShow (persons.filter(
+      person => person.name.toLowerCase().match(
+        currentFilter.toLowerCase()
+        )
+      ))
+  }, [persons, currentFilter])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -90,12 +99,12 @@ const App = () => {
         .catch(error => {
           console.log('error :', error)
           setMessageType(0)
-            setNewMessage(
-              `${person.name} has already been removed from the server.`
-            )
-            setTimeout(() => {
-              setNewMessage(null)
-            }, 5000)
+          setNewMessage(
+            `${person.name} has already been removed from the server.`
+          )
+          setTimeout(() => {
+            setNewMessage(null)
+          }, 5000)
         }
         )
       }
@@ -116,11 +125,11 @@ const App = () => {
     setCurrentFilter(e.target.value);
   }
 
-  const personsToShow = persons.filter(
-    person => person.name.toLowerCase().match(
-      currentFilter.toLowerCase()
-      )
-    )
+  // const personsToShow = persons.filter(
+  //   person => person.name.toLowerCase().match(
+  //     currentFilter.toLowerCase()
+  //     )
+  //   )
 
   return (
     <div>

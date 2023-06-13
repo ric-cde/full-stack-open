@@ -61,6 +61,7 @@ const App = () => {
     ]
   }
   console.log(course.parts)
+  
   return (
     <div>
       <Header {...course.name} />
