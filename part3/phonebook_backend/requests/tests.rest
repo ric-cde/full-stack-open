@@ -1,0 +1,20 @@
+
+POST http://127.0.0.1:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "martina navarda",
+    "number": "500060040"
+}
+
+###
+DELETE http://127.0.0.1:3001/api/persons/2
+
+###
+GET http://127.0.0.1:3001/api/persons/4
+
+###
+GET http://127.0.0.1:3001/api/persons
+
+### 
+GET http://127.0.0.1:3001/info
