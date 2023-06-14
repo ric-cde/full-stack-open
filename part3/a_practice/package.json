@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../../part2/a_practice && npm run build && @powershell Copy-Item build -Recurse ../../part3/a_practice/build",
+    "deploy": "git add . && git commit -m uibuild && git push && eb deploy && eb scale 1 apractice",
+    "deploy:full": "npm run build:ui && npm run deploy"
   },
   "author": "richard herlihy",
   "license": "ISC",

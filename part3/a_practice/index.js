@@ -58,6 +58,7 @@ app.get('/api/notes/:id', (req, res) => {
       res.status(404).end() // .send(`Note ${id} not found`)
     }
 })
+
 app.delete('/api/notes/:id', (req, res) => {
   const id = Number(req.params.id)
   notes = notes.filter(note => note.id !== id)
