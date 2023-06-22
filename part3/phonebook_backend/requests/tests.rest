@@ -17,4 +17,4 @@ GET http://127.0.0.1:3001/api/persons/4
 GET http://127.0.0.1:3001/api/persons
 
 ### 
-GET http://127.0.0.1:3001/info
+GET http://127.0.0.1:3001/api/info

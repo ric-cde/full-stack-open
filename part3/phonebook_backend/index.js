@@ -1,12 +1,28 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
-app.use(express.json()) 
+
+// const requestLogger = (req, res, next) => {
+//     console.log('Method:', req.method)
+//     console.log('Path: ', req.path)
+//     console.log('Body: ', req.body)
+//     console.log('---');
+//     next()
+//     }
+// app.use(requestLogger)
+
 morgan.token('body', (req, res) => {
     if (req.method === 'POST') {
         return JSON.stringify(req.body) // req.headers['content-type'] == 'application/json' ? _ : "not JSON"
     }
 })
+
+app.use(cors())
+app.use(express.json())
+app.use(express.static('build'))
+
+  
 app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :body`))
 
 // app.use(morgan(function (tokens, req, res) {
@@ -16,9 +32,13 @@ app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :b
 //       tokens.status(req, res),
 //       tokens.res(req, res, 'content-length'), '-',
 //       tokens['response-time'](req, res), 'ms',
-//       tokens.res(req, res, 'body')
+//       tokens.res(req, res, 'body'),
 //     ].join(' ')
 //   }))
+
+const unknownEndpoint = (req, res) => {
+    response.status(404).send({error: 'unknown endpoint'})
+  }
 
 let phonebook = [
     { 
@@ -57,7 +77,7 @@ app.get('/api/persons/:id', (req, res) => {
     }
 })
 
-app.get('/info', (req, res) => {
+app.get('/api/info', (req, res) => {
     const count = phonebook.length
     const time = new Date()
     const page = `<p>Phonebook has info for ${count} people</p>
@@ -78,6 +98,7 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
     const body = req.body
     const name = body.name
+    // console.log(req.body)
     
     if (!name) {
         return res.status(400).json({
@@ -107,7 +128,7 @@ app.post('/api/persons', (req, res) => {
 
 const generateId = () => Math.round(Math.random()*1000000000000000)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`)
 })
