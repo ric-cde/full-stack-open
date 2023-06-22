@@ -7,8 +7,8 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../../part2/phonebook && npm run build && @powershell Copy-Item build -Recurse ../../part3/production_backend/build",
-    "deploy": "git add . && git commit -m uibuild && git push && fly deploy && fly logs && fly open",
+    "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../../part2/phonebook && npm run build && @powershell Copy-Item build -Recurse ../../part3/phonebook_backend/build",
+    "deploy": "git add . && git commit -m uibuild && git push && fly deploy && fly open && fly logs",
     "deploy:full": "npm run build:ui && npm run deploy"
   },
   "author": "Richard Herlihy",
