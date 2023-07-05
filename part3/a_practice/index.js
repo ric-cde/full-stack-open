@@ -12,7 +12,7 @@ const requestLogger = (req, res, next) => {
   }
 
 const unknownEndpoint = (req, res) => {
-  response.status(404).send({error: 'unknown endpoint'})
+  res.status(404).send({error: 'unknown endpoint'})
 }
   
 app.use(cors())
@@ -44,28 +44,33 @@ const Note = require('./models/note')
 //     }
 //   ]
 
-// app.get('/', (request, response) => {
-//     response.send('<h1>Hello World</h1>')
+// app.get('/', (req, res) => {
+//     res.send('<h1>Hello World</h1>')
 // })
 
-app.get('/api/notes', (request, response) => {
+app.get('/api/notes', (req, res) => {
     console.log('returning all notes... ')
     Note.find({}).then(notes => {
-      response.json(notes)
+      res.json(notes)
     })
 })
 
 app.get('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const note = notes.find(note => note.id === id)
-    if (note) {
-      console.log(`returning note ${id}: ${note.content} (${note.important ? "important" : "normal"}) 
-===`)
-      res.json(note)
-    } else {
-      console.log(`Note ${id}: not found`)
-      res.status(404).end() // .send(`Note ${id} not found`)
-    }
+  Note.findById(req.params.id).then(note => {
+    console.log(`returning note ${note.id}: ${note.content} (${note.important ? "important" : "normal"})`)
+    res.json(note)
+  })
+
+//     const id = Number(req.params.id)
+//     const note = notes.find(note => note.id === id)
+//     if (note) {
+//       console.log(`returning note ${id}: ${note.content} (${note.important ? "important" : "normal"}) 
+// ===`)
+//       res.json(note)
+//     } else {
+//       console.log(`Note ${id}: not found`)
+//       res.status(404).end() // .send(`Note ${id} not found`)
+//     }
 })
 
 app.delete('/api/notes/:id', (req, res) => {
@@ -86,27 +91,34 @@ app.post('/api/notes', (req, res) => {
   const body = req.body
 
   if (!body.content) {
-    return response.status(404).json({
+    return res.status(404).json({
       error: 'content missing'
     })
   }
 
-  const id = generateId()
+  const note = new Note({
+    content: body.content,
+    date: new Date(),
+    important: body.important || false
+  })
 
-  let note = {
-    'id': id,
-    'content': body.content,
-    'date': new Date(),
-    'important': body.important || false
-  }
-
-  console.log(`adding new note ${id}: ${note.content} (${note.important ? "important" : "normal"}) 
-===`)
+  console.log(`Saving new note to db: ${note.content} (${note.important ? "important" : "normal"})`);
   
-  notes.push(note)
-  res.json(note)
-  }
-)
+  note.save().then(savedNote => {
+    res.json(savedNote)
+  })
+  // const id = generateId()
+  // let note = {
+  //   'id': id,
+  //   'content': body.content,
+  //   'date': new Date(),
+  //   'important': body.important || false
+  // }
+  // notes.push(note)
+  
+  // console.log(`adding new note ${id}: ${note.content} (${note.important ? "important" : "normal"}) 
+
+})
 
 app.use(unknownEndpoint)
 

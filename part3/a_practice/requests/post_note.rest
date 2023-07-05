@@ -1,10 +1,10 @@
-GET http://apractice.eba-kph2xfd6.eu-west-1.elasticbeanstalk.com/api/notes
+GET http://localhost:3001/api/notes
 
 ###
 POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-    "content": "The VS Code REST client is very useful",
+    "content": "A new note now that routes are updated",
     "important": false
 }
