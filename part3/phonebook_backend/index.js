@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
+require("dotenv").config();
 
 // const requestLogger = (req, res, next) => {
 //     console.log('Method:', req.method)
@@ -18,15 +19,21 @@ morgan.token("body", (req, res) => {
 	}
 });
 
+const unknownEndpoint = (req, res) => {
+	response.status(404).send({ error: "unknown endpoint" });
+};
+
 app.use(cors());
-app.use(express.json());
 app.use(express.static("build"));
+app.use(express.json());
 
 app.use(
 	morgan(
 		`:method :url :status :res[content-length] - :response-time ms :body`
 	)
 );
+
+const Person = require('./models/person')
 
 // app.use(morgan(function (tokens, req, res) {
 //     return [
@@ -39,96 +46,160 @@ app.use(
 //     ].join(' ')
 //   }))
 
-const unknownEndpoint = (req, res) => {
-	response.status(404).send({ error: "unknown endpoint" });
-};
+// let phonebook = [
+// 	{
+// 		id: 1,
+// 		name: "Arto Hellas",
+// 		number: "040-123456",
+// 	},
+// 	{
+// 		id: 2,
+// 		name: "Ada Lovelace",
+// 		number: "39-44-5323523",
+// 	},
+// 	{
+// 		id: 3,
+// 		name: "Dan Abramov",
+// 		number: "12-43-234345",
+// 	},
+// 	{
+// 		id: 4,
+// 		name: "Mary Poppendieck",
+// 		number: "39-23-6423122",
+// 	},
+// ];
 
-let phonebook = [
-	{
-		id: 1,
-		name: "Arto Hellas",
-		number: "040-123456",
-	},
-	{
-		id: 2,
-		name: "Ada Lovelace",
-		number: "39-44-5323523",
-	},
-	{
-		id: 3,
-		name: "Dan Abramov",
-		number: "12-43-234345",
-	},
-	{
-		id: 4,
-		name: "Mary Poppendieck",
-		number: "39-23-6423122",
-	},
-];
-
-app.get("/api/persons", (req, res) => {
-	res.json(phonebook);
+app.get("/api/people", (req, res) => {
+	console.log('returning every person...')
+	Person.find({}).then(people => {
+		res.json(people)
+	})
 });
 	
-app.get("/api/persons/:id", (req, res) => {
-	const id = Number(req.params.id);
-	const person = phonebook.find((person) => person.id === id);
-	if (person) {
-		res.json(person);
-	} else {
-		res.status(404).end();
-	}
+app.get("/api/people/:id", (req, res) => {
+	Person.findById(req.params.id)
+		.then((person) => {
+			if (person) {
+				console.log(
+					`returning person ${person.id}: ${person.name} (${person.number})`
+				);
+				res.json(person);
+			} else {
+				res.status(404).end();
+			}
+		})
+		.catch((error) => next(error));
+
+	// const id = Number(req.params.id);
+	// const person = phonebook.find((person) => person.id === id);
+	// if (person) {
+	// 	res.json(person);
+	// } else {
+	// 	res.status(404).end();
+	// }
 });
 
 app.get("/api/info", (req, res) => {
-	const count = phonebook.length;
 	const time = new Date();
-	const page = `<p>Phonebook has info for ${count} people</p>
-                <p>${time}</p>`;
-	res.send(page);
+	Person.find({})
+		.then((people) => {
+			const count = people.length;
+			const page = `<p>Phonebook has info for ${count} people</p>
+						<p>${time}</p>`;
+			res.send(page);
+		})
+		.catch((error) => next(error));
 });
 
 app.get("/", (req, res) => {
 	res.send("<h1>Phonebook</h1>");
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-	const id = Number(req.params.id);
-	phonebook = phonebook.filter((person) => id !== person.id);
-	res.status(204).end();
+app.delete("/api/people/:id", (req, res) => {
+	const id = req.params.id;
+	console.log(`Deleting person  ${id}...`);
+
+	Person.findByIdAndRemove(req.params.id)
+		.then(result => {
+			res.status(204).end()
+		})
+		.catch(error => next(error))
+	
+	// const id = Number(req.params.id);
+	// phonebook = phonebook.filter((person) => id !== person.id);
+	// res.status(204).end();
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/people", (req, res) => {
 	const body = req.body;
-	const name = body.name;
-	// console.log(req.body)
 
-	if (!name) {
+	if (!body.name) {
 		return res.status(400).json({
-			error: "name missing",
+				error: "name missing",
 		});
 	} else if (!body.number) {
 		return res.status(400).json({
-			error: "number missing",
-		});
-	} else if (phonebook.find((person) => person.name === name)) {
-		return res.status(409).json({
-			error: "name already exists",
+				error: "number missing",
 		});
 	} else {
-		const person = {
-			id: generateId(),
-			name: body.name,
-			number: body.number,
-		};
-		phonebook = phonebook.concat(person);
-		res.json(person);
-	}
+		
+		Person.find({ name: body.name })
+			.then((existingPersons) => {
+				console.log(existingPersons);
+				if (existingPersons.length !== 0) {
+					return res.status(409).json({
+						error: "name already exists",
+					});
+				} else {
+					const person = new Person({
+						name: body.name,
+						number: body.number,
+					});
+
+					person.save().then((savedPerson) => {
+						res.status(201).json(savedPerson);
+					});
+				}
+			})
+			.catch((error) => next(error));
+	} 
+	
 });
 
-const generateId = () => Math.round(Math.random() * 1000000000000000);
+app.put("/api/people/:id", (req, res) => {
+	const id = req.params.id
+	const body = req.body
 
-const PORT = process.env.PORT || 3001;
+	const person = {
+		name: body.name,
+		number: body.number,
+	}
+	console.log(`Updating ${id} with ${body}`)
+
+	Person.findByIdAndUpdate(id, person, { new: true })
+		.then(updatedPerson => {
+			res.json(updatedPerson)
+		})
+		.catch(error => next(error))
+})
+
+// const generateId = () => Math.round(Math.random() * 1000000000000000);
+
+app.use(unknownEndpoint);
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
+
+
+const errorHandler = (error, req, res, next) => {
+	console.error(error.message);
+
+	if (error.name === "CastError") {
+		return res.status(400).send({ error: "malformatted id" });
+	}
+	next(error);
+};
+
+app.use(errorHandler);

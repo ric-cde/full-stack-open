@@ -1,5 +1,5 @@
 
-POST https://holy-cloud-6420.fly.dev/api/persons HTTP/1.1
+POST http://127.0.0.1:3001/api/people HTTP/1.1
 Content-Type: application/json
 
 {
@@ -8,13 +8,25 @@ Content-Type: application/json
 }
 
 ###
-DELETE https://holy-cloud-6420.fly.dev/api/persons/2
+PUT http://127.0.0.1:3001/api/people/6495b77d454d6679d95c48d2 HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "gregor",
+    "number": "500060040"
+}
 
 ###
-GET https://holy-cloud-6420.fly.dev/api/persons/4
+DELETE http://127.0.0.1:3001/api/people/6495b99e3672fd4d39165a5a
 
 ###
-GET https://holy-cloud-6420.fly.dev/api/persons
+GET http://127.0.0.1:3001/api/people/6495b77d454d6679d95c48d2
+
+###
+GET http://127.0.0.1:3001/api/people
 
 ### 
-GET https://holy-cloud-6420.fly.dev/api/info
+GET http://127.0.0.1:3001/api/info
+
+// http://127.0.0.1:3001/
+// https://holy-cloud-6420.fly.dev/api/info
