@@ -17,12 +17,12 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		minLength: [3, "Must be at least 3 letters."],
+		minLength: [3, "Must be at least 3 letters"],
 		required: true,
 	},
 	number: {
 		type: String,
-		minLength: [5, "Must be at least 5 digits."],
+		minLength: [5, "Must be at least 5 digits"],
 		required: true,
 	},
 });

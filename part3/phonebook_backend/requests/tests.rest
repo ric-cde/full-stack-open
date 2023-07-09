@@ -1,26 +1,27 @@
+###
+PUT http://127.0.0.1:3001/api/people/64a9d1e0e483339b9bebaacf HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "arz",
+    "number": "50001"
+}
+
+###
 
 POST http://127.0.0.1:3001/api/people HTTP/1.1
 Content-Type: application/json
 
 {   
-    "name": "arz",
-    "number": "50000"
-}
-
-###
-PUT http://127.0.0.1:3001/api/people/6495b77d454d6679d95c48d2 HTTP/1.1
-Content-Type: application/json
-
-{
-    "name": "gr",
-    "number": "500"
+    "name": "arzz",
+    "number": "50001"
 }
 
 ###
 DELETE http://127.0.0.1:3001/api/people/6495b99e3672fd4d39165a5a
 
 ###
-GET http://127.0.0.1:3001/api/people/6495b77d454d6679d95c48d2
+GET http://127.0.0.1:3001/api/people/64a9d1e0e483339b9bebaacf
 
 ###
 GET http://127.0.0.1:3001/api/people

@@ -131,39 +131,30 @@ app.delete("/api/people/:id", (req, res, next) => {
 });
 
 app.post("/api/people", (req, res, next) => {
-	const body = req.body;
+	const body = req.body
 
-	if (!body.name) {
-		return res.status(400).json({
-				error: "name missing",
-		});
-	} else if (!body.number) {
-		return res.status(400).json({
-				error: "number missing",
-		});
-	} else {
-		
-		Person.find({ name: body.name })
-			.then((existingPersons) => {
-				console.log(existingPersons);
-				if (existingPersons.length !== 0) {
-					return res.status(409).json({
-						error: "name already exists",
-					});
-				} else {
-					const person = new Person({
-						name: body.name,
-						number: body.number,
-					});
+	Person.find({ name: body.name })
+		.then((existingPersons) => {
+			console.log(existingPersons);
 
-					person.save().then((savedPerson) => {
-						res.status(201).json(savedPerson);
-					})
-					.catch((error) => next(error));
-				}
-			})
-			.catch((error) => next(error));
-	} 
+			if (existingPersons.length !== 0) {
+				return res.status(409).json({
+					error: "name already exists",
+				});
+			} else {
+				const person = new Person({
+					name: body.name,
+					number: body.number,
+				});
+
+				person.save().then((savedPerson) => {
+					res.status(201).json(savedPerson);
+				})
+				.catch((error) => next(error));
+			}
+
+		})
+		.catch(error => next(error));
 	
 });
 
@@ -175,7 +166,7 @@ app.put("/api/people/:id", (req, res, next) => {
 		name,
 		number,
 	}
-	console.log(`Updating ${id} with ${body}`)
+	console.log(`Updating ${id} with ${req.body}`)
 
 	Person.findByIdAndUpdate(
 		id,
