@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import NewPersonForm from './components/NewPersonForm'
 import Numbers from './components/Numbers'
 import Filter from './components/Filter'
-import personService from './services/persons'
+import personService from './services/people'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -42,10 +42,10 @@ const App = () => {
     if (findPerson) {
       console.log('Found a person:', findPerson)
       const updatedPerson = { ...findPerson, number: newNumber }
+      console.log('updatedPerson:', updatedPerson)
 
       // Prompt user to confirm, then send idea and new object in put request
       if (window.confirm(`${newName} already exists. Do you want to update their number?`)) {
-
         personService
           .update(findPerson.id, updatedPerson)
           .then(returnedPerson => {
@@ -58,7 +58,11 @@ const App = () => {
             )
           })
           .catch(error => {
-            console.log(error)
+            console.log("Error while updating item: ", error);
+            console.log(error.response.data.error);
+            console.log("test");
+            setMessageType(0);
+            setNewMessage(`${error.response.data.error}.`);
           })
       }
     } else {
@@ -75,8 +79,14 @@ const App = () => {
             `Added ${newName}`
           )
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('Error while adding item: ', error)
+          console.log(error.response.data.error);
+          console.log('test')
+          setMessageType(0);
+          setNewMessage(
+          `${error.response.data.error}.`
+          );
         })
 
       setTimeout(() => {
