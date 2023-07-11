@@ -1,0 +1,19 @@
+GET http://localhost:3001/api/notes
+
+###
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+    "content": "A n",
+    "important": false
+}
+
+###
+PUT http://localhost:3001/api/notes/64a1f610a4e68e904190ee8a
+Content-Type: application/json
+
+{
+    "content": "esgsegs - updated via put",
+    "important": false
+}

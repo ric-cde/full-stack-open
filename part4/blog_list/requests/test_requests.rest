@@ -1,0 +1,12 @@
+GET http://localhost:3003/api/blogs/
+
+###
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "How to build an Express app",
+    "author": "Gerry Fish",
+    "url": "www.fish.com/1",
+    "likes": 500
+}
