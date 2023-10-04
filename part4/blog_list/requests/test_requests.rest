@@ -1,12 +1,42 @@
+DELETE http://localhost:3003/api/blogs/6519ddff885355828cde8337 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY1MTlkZTAyOTdiY2Y2M2RjMTg3MGY4NyIsImlhdCI6MTY5NjI4MjQ2NywiZXhwIjoxNjk2Mjg2MDY3fQ.RpQ23MYcLv6KsCvYpGonZQfyLVMIxz6Uc56xk9c9Hm8
+
+###
+
 GET http://localhost:3003/api/blogs/
 
 ###
 POST http://localhost:3003/api/blogs/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY1MWRiM2JjOGUyYTI4YzI2YTliMmI4YyIsImlhdCI6MTY5NjQ0NjY4OSwiZXhwIjoxNjk2NDUwMjg5fQ.uKCau4fx6z8teumzyvJVdOQX8cLOCtVYiHmqfyZtwTU
 
 {
-    "title": "How to build an Express app",
-    "author": "Gerry Fish",
-    "url": "www.fish.com/1",
-    "likes": 500
+    "title": "Extra new blog after auth and tokens",
+    "author": "Michael Scarr",
+    "url": "www.scarr.com/5",
+    "likes": 990
 }
+
+###
+GET http://localhost:3003/api/users HTTP/1.1
+
+###
+POST http://localhost:3003/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "aaaaa",
+    "username": "aaa",
+    "password": "see"
+}
+
+###
+
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "root",
+    "password": "curry"
+}
+
