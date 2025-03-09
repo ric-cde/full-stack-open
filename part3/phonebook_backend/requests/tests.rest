@@ -1,33 +1,35 @@
+@baseUrl={{BASE_URL}}
+
 ###
-PUT http://127.0.0.1:3001/api/people/64a9d1e0e483339b9bebaacf HTTP/1.1
+PUT {{baseUrl}}/api/people/67c77816aca0141bd45373c7 HTTP/1.1
 Content-Type: application/json
 
 {
     "name": "arz",
-    "number": "50001"
+    "number": "50001-30342"
 }
 
 ###
 
-POST http://127.0.0.1:3001/api/people HTTP/1.1
+POST {{baseUrl}}/api/people HTTP/1.1
 Content-Type: application/json
 
 {   
-    "name": "arzz",
-    "number": "50001"
+    "name": "arzsdsz lkelklew",
+    "number": "50001-3034"
 }
 
 ###
-DELETE http://127.0.0.1:3001/api/people/6495b99e3672fd4d39165a5a
+DELETE {{baseUrl}}/api/people/67c77816aca0141bd45373c7
 
 ###
-GET http://127.0.0.1:3001/api/people/64a9d1e0e483339b9bebaacf
+GET {{baseUrl}}/api/people/64a9d1e0e483339b9bebaacf
 
 ###
-GET http://127.0.0.1:3001/api/people
+GET {{baseUrl}}/api/people
 
 ### 
-GET http://127.0.0.1:3001/api/info
+GET {{baseUrl}}/api/info
 
 // http://127.0.0.1:3001/
 // https://holy-cloud-6420.fly.dev/api/info

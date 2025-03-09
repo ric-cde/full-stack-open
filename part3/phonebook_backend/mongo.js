@@ -8,6 +8,8 @@ if (argc < 3) {
 	process.exit(1)
 }
 
+console.log(argc)
+
 const password = process.argv[2]
 const name = process.argv[3]
 const number = process.argv[4]
@@ -24,17 +26,17 @@ const personSchema = new Schema({
 
 const Person = model("Person", personSchema)
 
-if (argc === 4) {
+if (argc !== 5) {
 	console.log("Phonebook: ")
 
 	Person.find({}).then((result) => {
 		result.forEach((person) => {
 			console.log(person.name, person.number)
+			mongoose.connection.close()
 		})
 	})
 
-	mongoose.connection.close()
-} else {
+} else if (argc === 5) {
 	const person = new Person({
 		name: name,
 		number: number,
