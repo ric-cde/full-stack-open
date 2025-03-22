@@ -15,11 +15,20 @@ const unknownEndpoint = (req, res) => {
 
 const tokenExtractor = (req, res, next) => {
 	const authorization = req.get("authorization")
-	if (authorization && authorization.startsWith("Bearer ")) {
-		const token = authorization.replace("Bearer ", "")
-		req.decodedToken = jwt.verify(token, process.env.SECRET)
+	if (!authorization) {
+		next()
+		return
+	} else {
+		console.log("Extracting token...")
+		console.log(authorization)
+
+		if (authorization && authorization.startsWith("Bearer ".toLowerCase())) {
+			const token = authorization.replace("bearer ", "")
+			console.log("Token: ", token)
+			req.decodedToken = jwt.verify(token, process.env.SECRET)
+		}
+		next()
 	}
-	next()
 }
 
 const userExtractor = (req, res, next) => {

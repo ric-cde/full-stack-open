@@ -14,30 +14,48 @@ blogsRouter.get("/", async (req, res) => {
 	res.json(blogs)
 })
 
+blogsRouter.get("/:id", async (req, res) => {
+	logger.info(`returning blog ${req.params.id}... `)
+	const blog = await Blog.findById(req.params.id)
+	//.populate("user", { username: 1, name: 1, })
+	logger.info("blog is:", blog)
+	res.json(blog)
+})
+
 blogsRouter.post("/", async (req, res) => {
 	// const creator = await User.findOne({})
-
+	console.log("Adding new blog...")
+	console.log(req.body)
+	console.log(req.get("authorization"))
+	console.log(req.decodedToken)
 	if (!req.decodedToken.id) {
 		return res.status(401).json({ error: "token invalid" })
 	}
 
 	const user = await User.findById(req.user)
+	
+	console.log("'user' is:", user)
 
 	if (!user) {
 		return res.status(401).json({ error: "user not found" })
 	}
-	
+
 	const blog = new Blog({
 		title: req.body.title,
 		url: req.body.url,
 		author: req.body.author,
 		likes: req.body.likes || 0,
-		user: user._id
+		user: user.id
 	})
+
+	console.log("new blog is:", blog)
 
 	logger.info("Saving new blog to database...")
 
 	const savedBlog = await blog.save()
+
+	console.log("saved blog is...", savedBlog)
+
 	user.blogs = user.blogs.concat(savedBlog._id)
 	await user.save()
 
@@ -67,8 +85,15 @@ blogsRouter.delete("/:id", async (req, res) => {
 })
 
 blogsRouter.put("/:id", async (req, res) => {
-	await Blog.findByIdAndUpdate(req.params.id, req.body)
-	res.status(200).end()
+	try {
+		console.log("Updating blog...")
+		console.log(req.params.id, req.body)
+		const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
+		res.json(updatedBlog)
+	} catch (error) {
+		console.error(error)
+		res.status(500).json({ error: "Failed to update blog" })
+	}
 })
 
 module.exports = blogsRouter
