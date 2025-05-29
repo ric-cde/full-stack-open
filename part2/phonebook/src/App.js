@@ -1,166 +1,166 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
-import NewPersonForm from './components/NewPersonForm'
-import Numbers from './components/Numbers'
-import Filter from './components/Filter'
-import personService from './services/people'
-import Notification from './components/Notification'
+// latest updated version
+
+import { useState } from "react"
+import { useEffect } from "react"
+import NewPersonForm from "./components/NewPersonForm"
+import Numbers from "./components/Numbers"
+import Filter from "./components/Filter"
+import personService from "./services/people"
+import Notification from "./components/Notification"
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [currentFilter, setCurrentFilter] = useState('')
-  const [newMessage, setNewMessage] = useState(null)
-  const [messageType, setMessageType] = useState(0)
-  const [personsToShow, setPersonsToShow] = useState([])
+	const [persons, setPersons] = useState([])
+	const [formData, setFormData] = useState({ name: "", number: "" })
+	const [currentFilter, setCurrentFilter] = useState("") // input filter for filtering persons
+	const [newMessage, setNewMessage] = useState(null)
+	const [messageType, setMessageType] = useState(0)
 
-  useEffect(() => {
-    personService
-      .getAll()
-      .then(initialPersons => {
-        setPersons(initialPersons)
-      })
-      .catch(error => {
-        console.log(`Failed to retrieve notes: ${error}`)
-      })
-    }, [])
+	useEffect(() => {
+		personService
+			.getAll()
+			.then(setPersons)
+			.catch((error) => console.log(`Failed to retrieve notes: ${error}`))
+	}, []) // ✅ Runs only once when the component mounts
 
-  useEffect(() => {
-    setPersonsToShow (persons.filter(
-      person => person.name.toLowerCase().match(
-        currentFilter.toLowerCase()
-        )
-      ))
-  }, [persons, currentFilter])
+	useEffect(() => {
+		if (newMessage) {
+			const timeout = setTimeout(() => setNewMessage(null), 5000)
+			return () => clearTimeout(timeout)
+		}
+	}, [newMessage]) // ✅ Only depends on newMessage
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+	const personsToShow = persons.filter((p) =>
+		p.name.toLowerCase().includes(currentFilter.toLowerCase())
+	)
 
-    // check if the name input already exists
-    const findPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
-    if (findPerson) {
-      console.log('Found a person:', findPerson)
-      const updatedPerson = { ...findPerson, number: newNumber }
-      console.log('updatedPerson:', updatedPerson)
+	const handleSubmit = (e) => {
+		e.preventDefault()
 
-      // Prompt user to confirm, then send idea and new object in put request
-      if (window.confirm(`${newName} already exists. Do you want to update their number?`)) {
-        personService
-          .update(findPerson.id, updatedPerson)
-          .then(returnedPerson => {
-            console.log('Returned: ', returnedPerson)
-            setPersons([...persons.filter(p => p.id !== findPerson.id), returnedPerson])
-            console.log(persons)
-            setMessageType(1)
-            setNewMessage(
-              `Updated ${returnedPerson.name} with phone number: ${newNumber}`
-            )
-          })
-          .catch(error => {
-            console.log("Error while updating item: ", error);
-            console.log(error.response.data.error);
-            console.log("test");
-            setMessageType(0);
-            setNewMessage(`${error.response.data.error}.`);
-          })
-      }
-    } else {
-      // If the person wasn't found, post a new person to the server
-      console.log('Adding new person...')
-      const newPerson = {name: newName, number: newNumber}
-      personService
-        .create(newPerson)
-        .then(returnedPerson => {
-          console.log('response: ', returnedPerson)
-          setPersons([...persons, returnedPerson])
-          setMessageType(1)
-          setNewMessage(
-            `Added ${newName}`
-          )
-        })
-        .catch((error) => {
-          console.log('Error while adding item: ', error)
-          console.log(error.response.data.error);
-          console.log('test')
-          setMessageType(0);
-          setNewMessage(
-          `${error.response.data.error}.`
-          );
-        })
+		// check if the name input already exists in client memory
+		const foundPerson = persons.find(
+			(person) =>
+				person.name &&
+				person.name.toLowerCase() === formData.name.toLowerCase()
+		)
+		if (foundPerson) {
+			console.log("Found a person:", foundPerson)
+			const updatedPerson = { ...foundPerson, number: formData.number }
+			console.log("updatedPerson:", updatedPerson)
 
-      setTimeout(() => {
-        setNewMessage(null)
-      }, 5000)
-      // console.log(persons)
-      setNewName('')
-      setNewNumber('')
-    }
-  }
+			// Prompt user to confirm, then send idea and new object in put request
+			if (
+				window.confirm(
+					`${formData.name} already exists. Do you want to update their number?`
+				)
+			) {
+				personService
+					.update(foundPerson.id, updatedPerson)
+					.then((returnedPerson) => {
+						console.log("Returned: ", returnedPerson)
+						setPersons((prevPersons) =>
+							prevPersons.map((p) =>
+								p.id !== foundPerson.id ? p : returnedPerson
+							)
+						)
+						setMessageType(1)
+						setNewMessage(
+							`Updated ${returnedPerson.name} with phone number: ${formData.number}`
+						)
+					})
+					.catch((error) => {
+						console.log("Error while updating item: ", error)
+						const errorMessage =
+							error.response?.data?.error ||
+							"An unexpected error occurred."
+						console.log(errorMessage)
+						setMessageType(0)
+						setNewMessage(`${errorMessage}.`)
+					})
+			}
+		} else {
+			// If the person wasn't found, post a new person to the server
+			console.log("Adding new person...")
+			const newPerson = { name: formData.name, number: formData.number }
+			personService
+				.create(newPerson)
+				.then((returnedPerson) => {
+					console.log("response: ", returnedPerson)
+					setPersons((prevPersons) => [
+						...prevPersons,
+						returnedPerson,
+					])
+					setMessageType(1)
+					setNewMessage(`Added ${formData.name}`)
+				})
+				.catch((error) => {
+					console.log("Error while adding item: ", error)
+					const errorMessage =
+						error.response?.data?.error ||
+						"An unexpected error occurred."
+					console.log(errorMessage)
+					setMessageType(0)
+					setNewMessage(`${errorMessage}.`)
+				})
+		}
+		setFormData({ name: "", number: "" })
+	}
 
-  const handleDelete = (person) => {
-    console.log('DELETING...', person.name)
-    if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
-      personService
-        .remove(person.id)
-        .then(response => {
-          setPersons(persons.filter(p => p.id !== person.id))
-        })
-        .catch(error => {
-          console.log('error :', error)
-          setMessageType(0)
-          setNewMessage(
-            `${person.name} has already been removed from the server.`
-          )
-          setTimeout(() => {
-            setNewMessage(null)
-          }, 5000)
-        }
-        )
-      }
-  }
+	const handleDelete = (person) => {
+		console.log("DELETING...", person.name)
+		if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+			personService
+				.remove(person.id)
+				.then((response) => {
+					setPersons((prevPersons) =>
+						prevPersons.filter((p) => p.id !== person.id)
+					)
+				})
+				.catch((error) => {
+					console.log("error :", error)
+					setMessageType(0)
+					setNewMessage(
+						`${person.name} has already been removed from the server.`
+					)
+					    setPersons((prevPersons) =>
+							prevPersons.filter((p) => p.id !== person.id)
+						)
 
-  const handleNameChange = (e) => {
-    console.log(e.target.value);
-    setNewName(e.target.value);
-  }
+					setTimeout(() => {
+						setNewMessage(null)
+					}, 5000)
+				})
+		}
+	}
 
-  const handleNumberChange = (e) => {
-    console.log(e.target.value);
-    setNewNumber(e.target.value);
-  }
+	const handleInputChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value })
+	}
 
-  const handleFilterChange = (e) => {
-    console.log(e.target.value);
-    setCurrentFilter(e.target.value);
-  }
+	const handleFilterChange = (e) => {
+		console.log(e.target.value)
+		setCurrentFilter(e.target.value)
+	}
 
-  // const personsToShow = persons.filter(
-  //   person => person.name.toLowerCase().match(
-  //     currentFilter.toLowerCase()
-  //     )
-  //   )
+	return (
+		<div>
+			<h2>Phonebook</h2>
+			<Notification message={newMessage} type={messageType} />
+			<Filter handleChange={handleFilterChange} value={currentFilter} />
+			<div>
+				debug: {currentFilter} | {formData.name} | {formData.number}
+			</div>
 
-  return (
-    <div>
-      <h2>Phonebook</h2>
-      <Notification message={newMessage} type={messageType} />
-        <Filter handleChange={handleFilterChange} value={currentFilter} />
-        <div>debug: {currentFilter} | {newName} | {newNumber}</div>
+			<h2>Add a new</h2>
+			<NewPersonForm
+				onSubmit={handleSubmit}
+				handleInputChange={handleInputChange}
+				formData={formData}
+			/>
 
-      <h2>Add a new</h2>
-      <NewPersonForm 
-        onSubmit={handleSubmit} 
-        handleNameChange={handleNameChange} 
-        handleNumberChange={handleNumberChange} 
-        newName={newName} 
-        newNumber={newNumber}
-        />
-
-      <h2>Numbers</h2>
-      <Numbers persons={personsToShow} handleDelete={handleDelete} />
-    </div>
-  )
+			<h2>Numbers</h2>
+			<Numbers persons={personsToShow} handleDelete={handleDelete} />
+		</div>
+	)
 }
 
 export default App

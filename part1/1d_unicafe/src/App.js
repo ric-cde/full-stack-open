@@ -5,7 +5,7 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  
+  const opinions = {good, neutral, bad }
   return (
     <div>
       <div>
@@ -14,59 +14,41 @@ const App = () => {
         <Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
         <Button handleClick={() => setBad(bad + 1)} text="bad" />
       </div>
-      <Statistics opinions={[{good}, {neutral}, {bad}]} />
+      <Statistics {...opinions} />
     </div> 
     
   )
 }
 
-const Statistics = ({ opinions }) => {
-  console.log(opinions);
-  const all = opinions.reduce(
-    (acc, val) => acc + Object.values(val)[0], 0);
-  let average = 0
-  for (const item of opinions) {
-    const key = Object.keys(item)[0]
-    if (key === "good") {
-      average = average + item.good
-    } else if (key === "bad") {
-      average = average - item.bad
-    }
-  }
-  average = average / all;
-  let good = 0;
-  for (const item of opinions) {
-    if (Object.keys(item)[0] === "good") {
-      good = item.good
-    }
-  }
-  const positive = good / all;
+const Statistics = ({ good, neutral, bad }) => {
+  console.log(good, neutral, bad);
+  const all = good + neutral + bad;
+  
+  const average = all ? (good - bad) / all : 0;
+  const positive = all ? good / all : 0;
 
   if (all > 0) {
     return (
-      <div>
-        <h1>statistics</h1>
-          <table>
-            {opinions.map(item => {
-              const text = Object.keys(item)[0]
-              const value = Object.values(item)[0]
-              return <StatisticLine 
-                        text={text} 
-                        value={value} 
-                        key={text} />
-            })}
-            <StatisticLine 
-              text="all" 
-              value={all} />
-            <StatisticLine 
-              text="average" 
-              value={average ? (Math.round(average * 100) / 100) : ""} />
-            <StatisticLine 
-              text="positive" 
-              value={positive ? (Math.round(positive * 10000) / 100) + "%" : ""} />
-          </table>
-      </div>
-  )}
+		<div>
+			<h1>statistics</h1>
+			<table>
+				<StatisticLine text="good" value={good} />
+				<StatisticLine text="neutral" value={neutral} />
+				<StatisticLine text="bad" value={bad} />
+				<StatisticLine text="all" value={all} />
+				<StatisticLine
+					text="average"
+					value={average ? Math.round(average * 100) / 100 : ""}
+				/>
+				<StatisticLine
+					text="positive"
+					value={
+						positive ? Math.round(positive * 10000) / 100 + "%" : ""
+					}
+				/>
+			</table>
+		</div>
+	)}
   else {
     return (
       <div>
