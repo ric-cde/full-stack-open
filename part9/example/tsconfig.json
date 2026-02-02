@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"target": "ES2022", //which version to use
+		"strict": true, // strict type checking
+		"noUnusedLocals": true, // errors on unused local variables
+		"noUnusedParameters": true, // errors on unused function arguments
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true, // break or return required after each case
+		"esModuleInterop": true, // allows you to import CommonJS modules (require) as ES modules
+		"moduleResolution": "node" // looks in current directory, then up parent directories (node_modules folders)
+	}
+}
