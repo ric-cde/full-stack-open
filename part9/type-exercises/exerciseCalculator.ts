@@ -25,7 +25,7 @@ export const calculateExercises = (hours: number[], target: number): Result => {
 		ratingDescription = "could be better"
 	}
 
-	let exerciseData = {
+	const exerciseResult = {
 		periodLength: hours.length,
 		trainingDays: hours.filter((d) => d > 0).length,
 		success: average >= target,
@@ -35,7 +35,7 @@ export const calculateExercises = (hours: number[], target: number): Result => {
 		average,
 	}
 
-	return exerciseData
+	return exerciseResult
 }
 
 export const parseNumbers = (data: string[]): number[] => {
@@ -53,7 +53,7 @@ if (require.main === module) {
 		const target: number = parseNumbers([process.argv[2]])[0]
 
 		console.log(calculateExercises(exerciseData, target))
-	} catch (error) {
+	} catch (error: unknown) {
 		let errorMsg = "Something went wrong: "
 		if (error instanceof Error) {
 			errorMsg += error.message

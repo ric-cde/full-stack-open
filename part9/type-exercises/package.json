@@ -4,6 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"dev": "ts-node-dev index.ts",
+		"start": "test-node-dev",
+		"lint": "eslint .",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"calculateBmi": "ts-node bmiCalculator.ts",
 		"calculateExercises": "ts-node exerciseCalculator.ts"
@@ -13,10 +16,14 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.28.2",
 	"devDependencies": {
+		"@eslint/js": "^9.39.2",
+		"@types/express": "^5.0.6",
 		"@types/node": "^25.1.0",
+		"eslint": "^9.39.2",
 		"ts-node": "^10.9.2",
 		"ts-node-dev": "^2.0.0",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.54.0"
 	},
 	"dependencies": {
 		"express": "^5.2.1"

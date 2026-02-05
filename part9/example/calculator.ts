@@ -1,7 +1,7 @@
-type Operator = "multiply" | "add" | "subtract" | "divide"
+export type Operator = "multiply" | "add" | "subtract" | "divide"
 type Result = number | string
 
-const calculator = (a: number, b: number, op: Operator): Result => {
+export const calculator = (a: number, b: number, op: Operator): Result => {
 	switch (op) {
 		case "multiply":
 			return a * b
@@ -19,14 +19,14 @@ const calculator = (a: number, b: number, op: Operator): Result => {
 	}
 }
 
-try {
-	console.log(calculator(2, 0, "divide"))
-} catch (error: unknown) {
-	let errorMessage = "something went wrong: "
-	if (error instanceof Error) {
-		errorMessage += error.message
+if (require.main === module) {
+	try {
+		console.log(calculator(2, 0, "divide"))
+	} catch (error: unknown) {
+		let errorMessage = "something went wrong: "
+		if (error instanceof Error) {
+			errorMessage += error.message
+		}
+		console.log(errorMessage)
 	}
-	console.log(errorMessage)
 }
-
-console.log(process.argv)

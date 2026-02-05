@@ -1,7 +1,8 @@
+import { parseNum } from "./utils"
+
 export const calculateBmi = (height: number, weight: number): string => {
-	if (height < 0) throw new Error("Height must be a positive number.")
-	if (Number.isNaN(height) || Number.isNaN(weight))
-		throw new Error("Height and weight must be numbers.")
+	if (height <= 0 || weight <= 0)
+		throw new Error("Inputs must be positive numbers.")
 
 	const bmi = weight / (height / 100) ** 2
 
@@ -12,13 +13,12 @@ export const calculateBmi = (height: number, weight: number): string => {
 
 if (require.main === module) {
 	try {
-		const height = Number(process.argv[2])
-		const weight = Number(process.argv[3])
-
-		if (Number.isNaN(height) || Number.isNaN(weight))
-			throw new Error("Provided values were not numbers")
-		console.log(calculateBmi(height, weight))
-	} catch (error) {
+		const bmi = calculateBmi(
+			parseNum(process.argv[2]),
+			parseNum(process.argv[3]),
+		)
+		console.log(bmi)
+	} catch (error: unknown) {
 		let errorMsg = "Something went wrong: "
 		if (error instanceof Error) {
 			errorMsg += error.message
