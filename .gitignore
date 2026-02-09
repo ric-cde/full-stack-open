@@ -31,6 +31,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+.code-workspace
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

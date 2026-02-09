@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "."
-		}
+			"path": ".",
+		},
 	],
 	"settings": {
 		"github.copilot.enable": {
@@ -11,7 +11,9 @@
 			"markdown": false,
 			"scminput": false,
 			"javascriptreact": false,
-			"javascript": false
-		}
-	}
+			"javascript": false,
+			"typescript": false,
+			"http": true,
+		},
+	},
 }
