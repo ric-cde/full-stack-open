@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY3ZmZiNTViMDdjOGJiODA0MGU3NDI1ZCIsImlhdCI6MTc0NDgxMzYyOX0.tx2O7wZEzcY6q2FxYfkJGIoxCn0suNvY9-v2pb0zf4A
+
+{
+  "content": "Testing id vs _id",
+  "important": false
+}
