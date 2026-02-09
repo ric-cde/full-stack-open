@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients HTTP/1.1
+Content-Type: application/json
+
+{
+	"name": "Michael Jordan",
+	"dateOfBirth": "1963-02-17",
+	"ssn": "123-45-6789",
+	"occupation": "Basketball player",
+	"gender": "male"
+}
