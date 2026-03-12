@@ -1,4 +1,9 @@
-import type { RedactedPatient, Patient, NewPatient } from "../types.ts"
+import type {
+	RedactedPatient,
+	Patient,
+	NewPatient,
+	NewEntry,
+} from "../types.ts"
 import patients from "../../data/patients.ts"
 import { v1 as uuid } from "uuid"
 
@@ -6,6 +11,14 @@ const patientList: Patient[] = patients
 
 const getPatients = (): Patient[] => {
 	return patientList
+}
+
+const getPatient = (id: string): Patient => {
+	const patient = patientList.find((p) => p.id === id)
+	if (!patient) {
+		throw new Error(`Patient with id ${id} not found.`)
+	}
+	return patient
 }
 
 const getRedactedPatients = (): RedactedPatient[] => {
@@ -24,10 +37,30 @@ const getRedactedPatients = (): RedactedPatient[] => {
 const addPatient = (object: NewPatient): Patient => {
 	const newPatient = {
 		id: uuid(),
+		entries: [],
 		...object,
 	}
 	patientList.push(newPatient)
 	return newPatient
 }
 
-export default { getPatients, getRedactedPatients, addPatient }
+const addEntry = (id: string, object: NewEntry) => {
+	const newEntry = {
+		id: uuid(),
+		...object,
+	}
+	const patient = patientList.find((p) => p.id === id)
+	if (!patient) {
+		throw new Error("Patient not found.")
+	}
+	patient.entries = [...patient.entries, newEntry]
+	return newEntry
+}
+
+export default {
+	getPatients,
+	getPatient,
+	getRedactedPatients,
+	addPatient,
+	addEntry,
+}

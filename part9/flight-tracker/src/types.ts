@@ -1,26 +1,22 @@
-export enum Weather {
-	Sunny = "sunny",
-	Rainy = "rainy",
-	Cloudy = "cloudy",
-	Windy = "windy",
-	Stormy = "stormy",
-}
+import { z } from "zod"
+import { newEntrySchema } from "./utils.ts"
 
-export enum Visibility {
-	Great = "great",
-	Good = "good",
-	Ok = "ok",
-	Poor = "poor",
-}
+export { Weather, Visibility } from "./utils.ts"
 
-export interface DiaryEntry {
+// export interface DiaryEntry {
+// 	id: number
+// 	date: string
+// 	weather: Weather
+// 	visibility: Visibility
+// 	comment?: string
+// }
+
+export type NewDiaryEntry = z.infer<typeof newEntrySchema>
+
+export interface DiaryEntry extends NewDiaryEntry {
 	id: number
-	date: string
-	weather: Weather
-	visibility: Visibility
-	comment?: string
 }
 
-export type NewDiaryEntry = Omit<DiaryEntry, "id">
+// export type NewDiaryEntry = Omit<DiaryEntry, "id">
 
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, "comment">
